@@ -14,7 +14,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -96,13 +96,17 @@ fun FragmentScreen(onBack: (Bundle) -> Unit) {
     val activity = LocalContext.current as FragmentActivity
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(key1 = null) {
+    DisposableEffect(key1 = null) {
         activity.supportFragmentManager.setFragmentResultListener(
             "fragmentResult",
             lifecycleOwner,
         ) { _, result ->
             println("Fragment result")
             onBack(result)
+        }
+
+        onDispose {
+            activity.supportFragmentManager.clearFragmentResultListener("fragmentResult")
         }
     }
 
